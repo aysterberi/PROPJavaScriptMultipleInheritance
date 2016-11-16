@@ -20,6 +20,7 @@ const myObject = {
     }
 };
 
+/* Test from Beatrice, should output: "func0: hello" */
 const obj0 = myObject.create(null);
 obj0.func = function(arg) { return "func0: " + arg; };
 const obj1 = myObject.create([obj0]);
