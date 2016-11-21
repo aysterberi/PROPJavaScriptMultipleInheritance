@@ -1,17 +1,17 @@
-const myObject = {
+var myObject = {
     prototypeList: null,
     create: function (prototypeList) {
-        let obj = Object.create(myObject);
+        var obj = Object.create(myObject);
         obj.prototypeList = prototypeList;
         return obj;
     },
     call: function (functionName, parameters) {
-        if (functionName in this)
+        if (this.hasOwnProperty(functionName))
             return this[functionName].apply(null, parameters);
         else if (this.prototypeList != null)
-            for (let i = 0; i < this.prototypeList.length; i++) {
+            for (var i = 0; i < this.prototypeList.length; i++) {
                 if ("call" in this.prototypeList[i]) {
-                    let found = this.prototypeList[i].call(functionName, parameters);
+                    var found = this.prototypeList[i].call(functionName, parameters);
                     if (found != null)
                         return found;
                 }
@@ -21,12 +21,12 @@ const myObject = {
 };
 
 /* Test from Beatrice, should output: "func0: hello" */
-const obj0 = myObject.create(null);
+var obj0 = myObject.create(null);
 obj0.func = function(arg) { return "func0: " + arg; };
-const obj1 = myObject.create([obj0]);
-const obj2 = myObject.create([]);
+var obj1 = myObject.create([obj0]);
+var obj2 = myObject.create([]);
 obj2.func = function(arg) { return "func2: " + arg; };
-const obj3 = myObject.create([obj1, obj2]);
-const result = obj3.call("func", ["hello"]);
-console.log(result);
+var obj3 = myObject.create([obj1, obj2]);
+var result = obj3.call("func", ["hello"]);
+document.writeln(result);
 
