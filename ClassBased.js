@@ -1,27 +1,25 @@
 function createClass(className, superClassList) {
     this.className = className;
     this.superClassList = superClassList;
-
-}
-
-createClass.new = function () {
-    var instanceObject = {
-        call: function (funcName, parameters) {
-            if (funcName in this)
-                return this[funcName].apply(null, parameters);
-            else if (this.prototypeList != null)
-                for (var i = 0; i < this.prototypeList.length; i++) {
-                    if ("call" in this.prototypeList[i]) {
-                        var found = this.prototypeList[i].call(funcName, parameters);
-                        if (found != null)
-                            return found;
-                    }
+    this.new = function () {
+        return Object.create(this);
+    };
+    this.call = function (funcName, parameters) {
+        if (this.hasOwnProperty(funcName))
+            return this[funcName].apply(null, parameters);
+        else if (this.superClassList != null) {
+            for (var i = 0; i < this.superClassList.length; i++) {
+                if ("call" in this.superClassList[i]) {
+                    var found = this.superClassList[i].call(funcName, parameters);
+                    if (found != null)
+                        return found;
                 }
+            }
             return null;
         }
-    }
-};
-
+    };
+    return this.new();
+}
 
 /* Test from Beatrice, should output: "func0: hello" */
 var class0 = createClass("Class0", null);
