@@ -18,8 +18,8 @@
 
  Car = createClass(Car, ['Vehicle', 'TransportProvider']);  //"extends Vehicle…"
  Vehicle.accelerate = function () {
-   //lambda
-  };
+ //lambda
+ };
  myCar = Car.new();
  myCar.call('accelerate', 90.0);
 
@@ -28,12 +28,12 @@
  ->  myCar.Car.Vehicle.call(...) -> myCar.Car.Vehicle.call.apply(null, 90.0);
  > "wroom wroom"
 
-men
-myCar.fancy = function () {
-    return "I am a very fancy car";
-};
+ men
+ myCar.fancy = function () {
+ return "I am a very fancy car";
+ };
 
-myCar.fancy är undefined oavsett.
+ myCar.fancy är undefined oavsett.
 
  */
 function createClass(className, superClassList) {
@@ -42,7 +42,7 @@ function createClass(className, superClassList) {
     aClass.className = className;
     aClass.superClassList = superClassList;
 
-    aClass.new = function() {
+    aClass.new = function () {
         //create everything;
         let obj = Object.create(this);
         let objParent = aClass;
@@ -54,16 +54,15 @@ function createClass(className, superClassList) {
 
         //check if cyclic inheritance
         //return undefined if so
-        if (inList(objParent, objParent.superClassList))
-        {
+        if (inList(objParent, objParent.superClassList)) {
             return undefined;
         }
         // .call will return undefined if it cannot
         // find the function called.
-        obj.call = function(funcName, parameters) {
+        obj.call = function (funcName, parameters) {
             let objFunction = null; // the function we will return;
             //set it to zero
-            if(objParent.hasOwnProperty(funcName)) {
+            if (objParent.hasOwnProperty(funcName)) {
                 //look-up if we have a function defined
                 // in our parent Class
                 objFunction = objParent[funcName].apply(null, parameters);
@@ -77,8 +76,7 @@ function createClass(className, superClassList) {
                 for (i; i < objClassList.length; i++) {
                     let ancestor = objClassList[i].new(); //instantiate the class to access its methods
                     objFunction = ancestor.call(funcName, parameters); //try to call the function
-                    if (objFunction != null)
-                    {
+                    if (objFunction != null) {
                         //stop searching as we found the function
                         //resolve multiple functions in init order
                         // ancestors[A,B,C] will be resolved A->B->C
@@ -101,18 +99,15 @@ function createClass(className, superClassList) {
     return aClass;
 }
 
-function inList (name, list) {
-    if (list != undefined){
-        for(let j=0; j<list.length; j++)
-        {
+function inList(name, list) {
+    if (list != undefined) {
+        for (let j = 0; j < list.length; j++) {
             let tmp = list[j];
-            if (name == tmp){
+            if (name == tmp) {
                 return true;
             }
-            else if(tmp.superClassList != undefined)
-            {
-                for(let i=0; i < tmp.superClassList.length; i++)
-                {
+            else if (tmp.superClassList != undefined) {
+                for (let i = 0; i < tmp.superClassList.length; i++) {
                     inList(name, tmp.superClassList);
                 }
             }
@@ -121,34 +116,6 @@ function inList (name, list) {
     }
     return false;
 }
-/*function createClass(className, superClassList) {
-    this.className = className;
-    this.superClassList = superClassList;
-    this.new = function () {
-        let obj = Object.create(this);
-    };
-    this.call = function (funcName, parameters) {
-        if (this.hasOwnProperty(funcName) && (typeof funcName == 'function'))
-            return this[funcName].apply(null, parameters);
-        else if (this.superClassList != null) {
-            if(className in this.superClassList)
-            {
-                //try to catch cyclic
-                return null;
-            }
-            for (var i = 0; i < this.superClassList.length; i++) {
-                if ("call" in this.superClassList[i]) {
-                    let found = this.superClassList[i].call(funcName, parameters);
-                    if (found != undefined)
-                        return found;
-                    return null;
-                }
-            }
-            return null;
-        }
-    };
-    return this.new();
-}*/
 
 /* Test from Beatrice, should output: "func0: hello" */
 var class0 = createClass("Class0", null);
