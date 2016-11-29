@@ -115,6 +115,7 @@ DiamondProblemShouldBePrevented = function () {
     var Aeroplane = createClass("Aeroplane", [Movable]);
     var LandVehicle = createClass("LandVehicle", [Movable]);
     var AeroCar = createClass("AeroCar", [LandVehicle, Aeroplane]);  //"extends LandVehicle…"
+    //this function should only be called once
     Movable.accelerate = function (speed) {
         count++;
     };
