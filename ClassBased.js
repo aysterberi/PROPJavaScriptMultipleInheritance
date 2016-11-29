@@ -71,14 +71,7 @@ function createClass(className, superClassList) {
                 let i = 0;
                 for (i; i < this.objClassList.length; i++) {
                     let ancestor = this.objClassList[i].new(); //instantiate the class to access its methods
-                    objFunction = ancestor.call(funcName, parameters); //try to call the function
-                    if (objFunction != null) {
-                        //stop searching as we found the function
-                        //TODO: resolve diamond problem
-                        //TODO: Call function only once; method:
-                        //TODO: ancestors[A,B,C] shall be resolved A->B->C
-                        return objFunction;
-                    }
+                    return ancestor.call(funcName, parameters); //try to call the function
                 }
             }
             return objFunction;
@@ -144,17 +137,25 @@ CyclicInheritanceShouldBePrevented = function () {
     assertEquals(undefined, testObj);
 };
 
+UndefinedFunctionShouldBeUndefined = function () {
+    //undefined test
+    console.log("\tUndefinedFunctionShouldBeUndefined");
+    var testClass = createClass("UndefinedClass", []);
+    testObj = testClass.new();
+    assertEquals(undefined, testObj.call("NonexistentFunc", []));
+};
 DiamondProblemShouldBePrevented = function () {
     console.log("\tDiamondProblemShouldBePrevented");
     var count = 0;
-    var TransportProvider = createClass("TransportProvider", null);
-    var Vehicle = createClass("Vehicle", [TransportProvider]);
-    var Car = createClass("Car", [Vehicle, TransportProvider]);  //"extends Vehicle…"
-    TransportProvider.accelerate = function (speed) {
+    var Movable = createClass("Movable", null);
+    var Aeroplane = createClass("Aeroplane", [Movable]);
+    var LandVehicle = createClass("LandVehicle", [Movable]);
+    var AeroCar = createClass("AeroCar", [LandVehicle, Aeroplane]);  //"extends LandVehicle…"
+    Movable.accelerate = function (speed) {
         //lambda
         count++;
     };
-    var myCar = Car.new();
+    var myCar = AeroCar.new();
     myCar.call('accelerate', [90.0]);
     assertEquals(1, count);
 
@@ -163,6 +164,7 @@ DiamondProblemShouldBePrevented = function () {
 runAllTests = function () {
     DiamondProblemShouldBePrevented();
     CyclicInheritanceShouldBePrevented();
+    UndefinedFunctionShouldBeUndefined();
 };
 
 runAllTests();
