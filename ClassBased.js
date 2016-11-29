@@ -16,19 +16,15 @@
  ändra hur mycket man vill i klassen men man kan inte lägga till nya funktioner
  eller publika fält i instansobjektet! T.ex. nedan
 
- Car = createClass(Car, ['Vehicle', 'TransportProvider']);  //"extends Vehicle…"
+ Car = createClass(Car, [Vehicle, TransportProvider]);  //"extends Vehicle…"
  Vehicle.accelerate = function () {
- //lambda
+ //wrroom wroom
  };
  myCar = Car.new();
- myCar.call('accelerate', 90.0);
+ myCar.call('accelerate', [90.0]);
+-> detta funkar
 
- Anropsstacken blir
- myCar.call(...) -> myCar.Car.call(...)
- ->  myCar.Car.Vehicle.call(...) -> myCar.Car.Vehicle.call.apply(null, 90.0);
- > "wroom wroom"
-
- men
+men inte detta:
  myCar.fancy = function () {
  return "I am a very fancy car";
  };
@@ -134,10 +130,37 @@ var result = obj3.call("func", ["hello"]);
 console.log(result);
 
 
+//diamond problem test
+var count=0;
+var TransportProvider = createClass("TransportProvider", null);
+var Vehicle = createClass("Vehicle", [TransportProvider]);
+var Car = createClass("Car", [Vehicle, TransportProvider]);  //"extends Vehicle…"
+TransportProvider.accelerate = function (speed) {
+    //lambda
+    count++;
+};
+var myCar = Car.new();
+myCar.call('accelerate', [90.0]);
+assertEquals(1, count);
+
+
+
+
 //cyclic inheritance test
 var testClass = createClass("Class3", [null]);
 testClass.superClassList = [testClass, class1, class2];
 testObj = testClass.new();
-console.log(testObj);
-result = testObj.call("func", ["hello darkness my old friend"]);
-console.log(result);
+assertEquals(undefined, testObj);
+
+
+
+//helper utils
+function assertEquals(expected, actual)
+{
+    if(expected == actual)
+    {
+        return true;
+    }
+    console.log("AssertionError:\tExpected '"+ expected + "' but got '" + actual+ "'.");
+    return false;
+}
