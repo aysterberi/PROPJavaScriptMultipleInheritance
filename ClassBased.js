@@ -1,37 +1,3 @@
-/*
- Jag skrev om funktionen helt
- Den verkar funka men jag är inte säker
- på om jag missat något?
-
- Det är grovt samma kod förutom att jag inverterade så att istället
- för att vi letar efter "call" i superClassList så antar vi att vi får
- något tillbaka från apply och fortsätter söka så länge resultatet är null. Blir
- ingen infinite loop eftersom vi kör det i for-loopen.
-
- Jag splittrade upp även upp objektinstantiering från klass-skapandet
- och bytte till let där det gick. Vi kan alltid flytta det tillbaka men
- det ser mycket tydligare ut.
-
- Man kan nu göra som i java och skapa ett klassobjekt; Smidiga är att man kan
- ändra hur mycket man vill i klassen men man kan inte lägga till nya funktioner
- eller publika fält i instansobjektet! T.ex. nedan
-
- Car = createClass(Car, [Vehicle, TransportProvider]);  //"extends Vehicle…"
- Vehicle.accelerate = function () {
- //wrroom wroom
- };
- myCar = Car.new();
- myCar.call('accelerate', [90.0]);
- -> detta funkar
-
- men inte detta:
- myCar.fancy = function () {
- return "I am a very fancy car";
- };
-
- myCar.fancy är undefined oavsett.
-
- */
 function createClass(className, superClassList) {
     //create the class object
     let aClass = Object.create(this);
@@ -150,7 +116,6 @@ DiamondProblemShouldBePrevented = function () {
     var LandVehicle = createClass("LandVehicle", [Movable]);
     var AeroCar = createClass("AeroCar", [LandVehicle, Aeroplane]);  //"extends LandVehicle…"
     Movable.accelerate = function (speed) {
-        //lambda
         count++;
     };
     var myCar = AeroCar.new();
