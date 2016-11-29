@@ -42,7 +42,7 @@ function createClass(className, superClassList) {
             return objFunction;
         };
         obj.getClass = function () {
-            return objParent;
+            return obj.objParent;
         };
 
         Object.preventExtensions(obj); //prevent instantiation modification
@@ -51,26 +51,28 @@ function createClass(className, superClassList) {
         return obj;
     };
 
-    return aClass;
-}
-
-function inList(name, list) {
-    if (list != undefined) {
-        for (var j = 0; j < list.length; j++) {
-            var tmp = list[j];
-            if (name == tmp) {
-                return true;
-            }
-            else if (tmp.superClassList != undefined) {
-                for (var i = 0; i < tmp.superClassList.length; i++) {
-                    inList(name, tmp.superClassList);
+    //helper utility
+  function inList(name, list) {
+        if (list != undefined) {
+            for (var j = 0; j < list.length; j++) {
+                var tmp = list[j];
+                if (name == tmp) {
+                    return true;
+                }
+                else if (tmp.superClassList != undefined) {
+                    for (var i = 0; i < tmp.superClassList.length; i++) {
+                        inList(name, tmp.superClassList);
+                    }
                 }
             }
+            return false;
         }
         return false;
     }
-    return false;
+    return aClass;
 }
+
+
 
 /* Test from Beatrice, should output: "func0: hello" */
 var class0 = createClass("Class0", null);
@@ -123,7 +125,7 @@ DiamondProblemShouldBePrevented = function () {
     myCar.call('accelerate', [90.0]);
     assertEquals(1, count);
 
-}
+};
 
 runAllTests = function () {
     DiamondProblemShouldBePrevented();
