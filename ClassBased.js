@@ -50,6 +50,12 @@ function createClass(className, superClassList) {
         obj.getClassList = function () {
             return objClassList;
         };
+        //check if cyclic inheritance
+        //return undefined if so
+        if (inList(aClass, aClass.superClassList))
+        {
+            aClass = undefined;
+        }
         // .call will return undefined if it cannot
         // find the function called.
         obj.call = function(funcName, parameters) {
@@ -90,6 +96,25 @@ function createClass(className, superClassList) {
     };
 
     return aClass;
+}
+
+function inList (name, list) {
+    if (list != undefined){
+        for(let j=0; j<list.length; j++)
+        {
+            let tmp = list[j];
+            if (name == tmp){
+                return true;
+            }
+            else if(tmp.classList != undefined)
+            {
+                for(let i=0; i < tmp.classList.length; i++)
+                {
+                    inList(name, tmp.classList);
+                }
+            }
+        }
+    }
 }
 /*function createClass(className, superClassList) {
     this.className = className;
