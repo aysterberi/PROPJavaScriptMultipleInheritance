@@ -47,7 +47,9 @@ function createClass(className, superClassList) {
         let objParent = aClass;
         let objClassList = objParent.superClassList;
         //function declarations
-
+        obj.getClassList = function () {
+            return objClassList;
+        };
         // .call will return undefined if it cannot
         // find the function called.
         obj.call = function(funcName, parameters) {
@@ -75,13 +77,14 @@ function createClass(className, superClassList) {
                     }
                 }
             }
-            Object.preventExtensions(obj); //prevent instantiation modification
             return objFunction;
         };
         obj.getClass = function () {
             return objParent;
         };
 
+        Object.preventExtensions(obj); //prevent instantiation modification
+        Object.seal(obj);
         //return our instantiated class object
         return obj;
     };
