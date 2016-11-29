@@ -120,7 +120,7 @@ class2.func = function (arg) {
 var class3 = createClass("Class3", [class1, class2]);
 var obj3 = class3.new();
 var result = obj3.call("func", ["hello"]);
-//document.writeln(result);
+
 console.log(result);
 
 
@@ -178,3 +178,5 @@ function assertEquals(expected, actual) {
     console.log("\t\tAssertionError:\tExpected '" + expected + "' but got '" + actual + "'.");
     return false;
 }
+
+document.writeln(result);
