@@ -41,6 +41,7 @@ function createClass(className, superClassList) {
     let aClass = Object.create(this);
     aClass.className = className;
     aClass.superClassList = superClassList;
+
     aClass.new = function() {
         //create everything;
         let obj = Object.create(this);
@@ -50,11 +51,12 @@ function createClass(className, superClassList) {
         obj.getClassList = function () {
             return objClassList;
         };
+
         //check if cyclic inheritance
         //return undefined if so
-        if (inList(aClass, aClass.superClassList))
+        if (inList(objParent, objParent.superClassList))
         {
-            aClass = undefined;
+            return undefined;
         }
         // .call will return undefined if it cannot
         // find the function called.
@@ -73,12 +75,13 @@ function createClass(className, superClassList) {
                 //iterate through non-empty class list
                 let i = 0;
                 for (i; i < objClassList.length; i++) {
-                    let ancestor = superClassList[i].new(); //instantiate the class to access its methods
+                    let ancestor = objClassList[i].new(); //instantiate the class to access its methods
                     objFunction = ancestor.call(funcName, parameters); //try to call the function
                     if (objFunction != null)
                     {
                         //stop searching as we found the function
                         //resolve multiple functions in init order
+                        // ancestors[A,B,C] will be resolved A->B->C
                         break;
                     }
                 }
@@ -106,15 +109,17 @@ function inList (name, list) {
             if (name == tmp){
                 return true;
             }
-            else if(tmp.classList != undefined)
+            else if(tmp.superClassList != undefined)
             {
-                for(let i=0; i < tmp.classList.length; i++)
+                for(let i=0; i < tmp.superClassList.length; i++)
                 {
-                    inList(name, tmp.classList);
+                    inList(name, tmp.superClassList);
                 }
             }
         }
+        return false;
     }
+    return false;
 }
 /*function createClass(className, superClassList) {
     this.className = className;
@@ -159,4 +164,13 @@ var class3 = createClass("Class3", [class1, class2]);
 var obj3 = class3.new();
 var result = obj3.call("func", ["hello"]);
 //document.writeln(result);
+console.log(result);
+
+
+//cyclic inheritance test
+var testClass = createClass("Class3", [null]);
+testClass.superClassList = [testClass, class1, class2];
+testObj = testClass.new();
+console.log(testObj);
+result = testObj.call("func", ["hello darkness my old friend"]);
 console.log(result);
