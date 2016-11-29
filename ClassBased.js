@@ -68,10 +68,9 @@ function createClass(className, superClassList) {
             // in one of our ancestors
             else if (this.objClassList != null) {
                 //iterate through non-empty class list
-                let i = 0;
-                for (i; i < this.objClassList.length; i++) {
+                for (let i = 0; i < this.objClassList.length; i++) {
                     let ancestor = this.objClassList[i].new(); //instantiate the class to access its methods
-                    return ancestor.call(funcName, parameters); //try to call the function
+                    return ancestor.call(funcName, parameters); //try to call the function through recursion
                 }
             }
             return objFunction;
@@ -122,7 +121,6 @@ var obj3 = class3.new();
 var result = obj3.call("func", ["hello"]);
 
 console.log(result);
-
 
 
 // TESTS
