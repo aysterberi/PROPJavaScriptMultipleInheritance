@@ -3,6 +3,7 @@ var myObject = {};
 myObject.prototypeList = null;
 
 myObject.call = function (functionName, parameters) {
+    // TODO: Remove all these comments before submitting
     // for (var name in this)
     //     if (name == functionName)
     //         return this[name].apply(null, parameters);
@@ -15,9 +16,8 @@ myObject.call = function (functionName, parameters) {
     if (this.hasOwnProperty(functionName))
         return this[functionName].apply(null, parameters);
 
-
     for (var i = 0; i < this.ancestors.length; i++)
-        return this.ancestors[i].length != 0 ? this.ancestors[i].call(functionName, parameters) : 0;
+        return this.ancestors[i].length != 0 ? this.ancestors[i].call(functionName, parameters) : null;
 };
 
 myObject.create = function (prototypeList) {
@@ -33,9 +33,11 @@ myObject.create = function (prototypeList) {
 /* Test from Beatrice, should output: "func0: hello" */
 var obj0 = myObject.create(null);
 obj0.func = function(arg) { return "func0: " + arg; };
+console.log(obj0.func());
 var obj1 = myObject.create([obj0]);
 var obj2 = myObject.create([]);
 obj2.func = function(arg) { return "func2: " + arg; };
+console.log(obj2.func());
 var obj3 = myObject.create([obj1, obj2]);
 var result = obj3.call("func", ["hello"]);
 console.log(result);
