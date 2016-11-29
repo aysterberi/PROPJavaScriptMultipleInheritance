@@ -22,9 +22,9 @@
  };
  myCar = Car.new();
  myCar.call('accelerate', [90.0]);
--> detta funkar
+ -> detta funkar
 
-men inte detta:
+ men inte detta:
  myCar.fancy = function () {
  return "I am a very fancy car";
  };
@@ -41,16 +41,16 @@ function createClass(className, superClassList) {
     aClass.new = function () {
         //create everything;
         let obj = Object.create(this);
-        let objParent = aClass;
-        let objClassList = objParent.superClassList;
+        obj.objParent = aClass;
+        obj.objClassList = obj.objParent.superClassList;
         //function declarations
         obj.getClassList = function () {
-            return objClassList;
+            return obj.objClassList;
         };
 
         //check if cyclic inheritance
         //return undefined if so
-        if (inList(objParent, objParent.superClassList)) {
+        if (inList(obj.objParent, obj.objParent.superClassList)) {
             return undefined;
         }
         // .call will return undefined if it cannot
@@ -58,25 +58,26 @@ function createClass(className, superClassList) {
         obj.call = function (funcName, parameters) {
             let objFunction = null; // the function we will return;
             //set it to zero
-            if (objParent.hasOwnProperty(funcName)) {
+            if (this.objParent.hasOwnProperty(funcName)) {
                 //look-up if we have a function defined
                 // in our parent Class
-                objFunction = objParent[funcName].apply(null, parameters);
+                objFunction = this.objParent[funcName].apply(null, parameters);
                 //prepare the function and exit to return;
             }
             // look-up if we have the function defined
             // in one of our ancestors
-            else if (objClassList != null) {
+            else if (this.objClassList != null) {
                 //iterate through non-empty class list
                 let i = 0;
-                for (i; i < objClassList.length; i++) {
-                    let ancestor = objClassList[i].new(); //instantiate the class to access its methods
+                for (i; i < this.objClassList.length; i++) {
+                    let ancestor = this.objClassList[i].new(); //instantiate the class to access its methods
                     objFunction = ancestor.call(funcName, parameters); //try to call the function
                     if (objFunction != null) {
                         //stop searching as we found the function
-                        //resolve multiple functions in init order
-                        // ancestors[A,B,C] will be resolved A->B->C
-                        break;
+                        //TODO: resolve diamond problem
+                        //TODO: Call function only once; method:
+                        //TODO: ancestors[A,B,C] shall be resolved A->B->C
+                        return objFunction;
                     }
                 }
             }
@@ -130,37 +131,48 @@ var result = obj3.call("func", ["hello"]);
 console.log(result);
 
 
-//diamond problem test
-var count=0;
-var TransportProvider = createClass("TransportProvider", null);
-var Vehicle = createClass("Vehicle", [TransportProvider]);
-var Car = createClass("Car", [Vehicle, TransportProvider]);  //"extends Vehicle…"
-TransportProvider.accelerate = function (speed) {
-    //lambda
-    count++;
+
+// TESTS
+
+console.log("Running tests…");
+CyclicInheritanceShouldBePrevented = function () {
+    //cyclic inheritance test
+    console.log("\tCyclicInheritanceShouldBePrevented");
+    var testClass = createClass("Class3", [null]);
+    testClass.superClassList = [testClass, class1, class2];
+    testObj = testClass.new();
+    assertEquals(undefined, testObj);
 };
-var myCar = Car.new();
-myCar.call('accelerate', [90.0]);
-assertEquals(1, count);
 
+DiamondProblemShouldBePrevented = function () {
+    console.log("\tDiamondProblemShouldBePrevented");
+    var count = 0;
+    var TransportProvider = createClass("TransportProvider", null);
+    var Vehicle = createClass("Vehicle", [TransportProvider]);
+    var Car = createClass("Car", [Vehicle, TransportProvider]);  //"extends Vehicle…"
+    TransportProvider.accelerate = function (speed) {
+        //lambda
+        count++;
+    };
+    var myCar = Car.new();
+    myCar.call('accelerate', [90.0]);
+    assertEquals(1, count);
 
+}
 
+runAllTests = function () {
+    DiamondProblemShouldBePrevented();
+    CyclicInheritanceShouldBePrevented();
+};
 
-//cyclic inheritance test
-var testClass = createClass("Class3", [null]);
-testClass.superClassList = [testClass, class1, class2];
-testObj = testClass.new();
-assertEquals(undefined, testObj);
-
-
+runAllTests();
 
 //helper utils
-function assertEquals(expected, actual)
-{
-    if(expected == actual)
-    {
+function assertEquals(expected, actual) {
+    if (expected == actual) {
+        console.log("\t\tOK.");
         return true;
     }
-    console.log("AssertionError:\tExpected '"+ expected + "' but got '" + actual+ "'.");
+    console.log("\t\tAssertionError:\tExpected '" + expected + "' but got '" + actual + "'.");
     return false;
 }
