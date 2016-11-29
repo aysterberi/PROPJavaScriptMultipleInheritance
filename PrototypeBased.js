@@ -28,5 +28,6 @@ var obj2 = myObject.create([]);
 obj2.func = function(arg) { return "func2: " + arg; };
 var obj3 = myObject.create([obj1, obj2]);
 var result = obj3.call("func", ["hello"]);
-//document.writeln(result);
+console.log(result);
+document.writeln(result);
 
