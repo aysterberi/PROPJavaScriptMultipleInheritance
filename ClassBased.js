@@ -1,12 +1,12 @@
 function createClass(className, superClassList) {
     //create the class object
-    let aClass = Object.create(this);
+    var aClass = Object.create(this);
     aClass.className = className;
     aClass.superClassList = superClassList;
 
     aClass.new = function () {
         //create everything;
-        let obj = Object.create(this);
+        var obj = Object.create(this);
         obj.objParent = aClass;
         obj.objClassList = obj.objParent.superClassList;
         //function declarations
@@ -22,7 +22,7 @@ function createClass(className, superClassList) {
         // .call will return undefined if it cannot
         // find the function called.
         obj.call = function (funcName, parameters) {
-            let objFunction = null; // the function we will return;
+            var objFunction = null; // the function we will return;
             //set it to zero
             if (this.objParent.hasOwnProperty(funcName)) {
                 //look-up if we have a function defined
@@ -34,8 +34,8 @@ function createClass(className, superClassList) {
             // in one of our ancestors
             else if (this.objClassList != null) {
                 //iterate through non-empty class list
-                for (let i = 0; i < this.objClassList.length; i++) {
-                    let ancestor = this.objClassList[i].new(); //instantiate the class to access its methods
+                for (var i = 0; i < this.objClassList.length; i++) {
+                    var ancestor = this.objClassList[i].new(); //instantiate the class to access its methods
                     return ancestor.call(funcName, parameters); //try to call the function through recursion
                 }
             }
@@ -56,13 +56,13 @@ function createClass(className, superClassList) {
 
 function inList(name, list) {
     if (list != undefined) {
-        for (let j = 0; j < list.length; j++) {
-            let tmp = list[j];
+        for (var j = 0; j < list.length; j++) {
+            var tmp = list[j];
             if (name == tmp) {
                 return true;
             }
             else if (tmp.superClassList != undefined) {
-                for (let i = 0; i < tmp.superClassList.length; i++) {
+                for (var i = 0; i < tmp.superClassList.length; i++) {
                     inList(name, tmp.superClassList);
                 }
             }
