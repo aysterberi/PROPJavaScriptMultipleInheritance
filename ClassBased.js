@@ -52,7 +52,7 @@ function createClass(className, superClassList) {
     };
 
     //helper utility
-  function inList(name, list) {
+    function inList(name, list) {
         if (list != undefined) {
             for (var j = 0; j < list.length; j++) {
                 var tmp = list[j];
@@ -69,9 +69,9 @@ function createClass(className, superClassList) {
         }
         return false;
     }
+
     return aClass;
 }
-
 
 
 /* Test from Beatrice, should output: "func0: hello" */
