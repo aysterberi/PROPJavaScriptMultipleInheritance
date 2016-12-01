@@ -12,9 +12,19 @@ myObject.call = function (functionName, parameters) {
 myObject.create = function (prototypeList) {
     var obj = Object.create(this);
     obj.ancestors = [];
-    if (prototypeList == null)
-        return obj;
-    obj.ancestors = prototypeList;
+    if (prototypeList == null) {
+        Object.defineProperty(obj, "ancestors", {
+            value: [],
+            writable: false
+        });
+    } else {
+
+        //continue to build object and lock the property
+        Object.defineProperty(obj, "ancestors", {
+            value: prototypeList,
+            writable: false
+        });
+    }
     return obj;
 };
 
@@ -42,7 +52,7 @@ CyclicInheritanceShouldBePrevented = function () {
     console.log("\tCyclicInheritanceShouldBePrevented");
     var testObj = myObject.create(null);
     testObj.ancestors = [testObj, obj0, obj2];
-    assertEquals(undefined, testObj);
+    assertEquals(undefined, testObj.ancestors);
 };
 
 UndefinedFunctionShouldBeUndefined = function () {
