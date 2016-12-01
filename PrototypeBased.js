@@ -25,7 +25,7 @@ myObject.create = function (prototypeList) {
 
         function callSquirrel(nut) {
             var result;
-            var count=0;
+            var count = 0;
             if (nut.hasOwnProperty(functionName)) {
                 result = nut[functionName];
             }
@@ -53,13 +53,11 @@ var obj0 = myObject.create(null);
 obj0.func = function (arg) {
     return "func0: " + arg;
 };
-console.log(obj0.func());
 var obj1 = myObject.create([obj0]);
 var obj2 = myObject.create([]);
 obj2.func = function (arg) {
     return "func2: " + arg;
 };
-console.log(obj2.func());
 var obj3 = myObject.create([obj1, obj2]);
 var result = obj3.call("func", ["hello"]);
 console.log(result);
