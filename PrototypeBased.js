@@ -1,20 +1,14 @@
 var myObject = {};
 
-myObject.prototypeList = null;
+//myObject.prototypeList = null;
 
-myObject.call = function (functionName, parameters) {
-    if (this.hasOwnProperty(functionName))
-        return this[functionName].apply(null, parameters);
-    for (var i = 0; i < this.ancestors.length; i++)
-        return this.ancestors[i].length != 0 ? this.ancestors[i].call(functionName, parameters) : null;
-};
 
 myObject.create = function (prototypeList) {
     var obj = Object.create(this);
     obj.ancestors = [];
     if (prototypeList == null) {
         Object.defineProperty(obj, "ancestors", {
-            value: [],
+            value: undefined,
             writable: false
         });
     } else {
@@ -25,6 +19,31 @@ myObject.create = function (prototypeList) {
             writable: false
         });
     }
+    obj.call = function (functionName, parameters) {
+        if (obj.hasOwnProperty(functionName))
+            return this[functionName].apply(null, parameters);
+
+        function dothetrickypart(theobj) {
+            var result;
+            var count=0;
+            if (theobj.hasOwnProperty(functionName)) {
+                result = theobj[functionName];
+            }
+            if (theobj.ancestors != undefined || theobj.ancestors != null) {
+                //iterate through ancestors to see if we can spot
+                //our function
+                while ((result == undefined) && (count < theobj.ancestors.length)) {
+                    result = dothetrickypart(theobj.ancestors[count++]);
+                }
+            }
+            return result;
+        }
+        var objFunction = dothetrickypart(this);
+        if (objFunction != undefined) {
+            return objFunction.apply(null, parameters);
+        }
+        return undefined;
+    };
     return obj;
 };
 
@@ -66,9 +85,10 @@ DiamondProblemShouldBePrevented = function () {
     console.log("\tDiamondProblemShouldBePrevented");
     var count = 0;
     var Movable = myObject.create(null);
+    var JustBothersome = myObject.create(null);
     var Aeroplane = myObject.create([Movable]);
     var LandVehicle = myObject.create([Movable]);
-    var AeroCar = myObject.create([LandVehicle, Aeroplane]); //"extends LandVehicle…"
+    var AeroCar = myObject.create([JustBothersome, LandVehicle, Aeroplane]); //"extends LandVehicle…"
     //this function should only be called once
     Movable.accelerate = function (speed) {
         count++;
@@ -96,5 +116,5 @@ function assertEquals(expected, actual) {
     return false;
 }
 
-document.writeln(result);
+//document.writeln(result);
 
