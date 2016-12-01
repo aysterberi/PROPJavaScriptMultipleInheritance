@@ -21,14 +21,14 @@ function createClass(className, superClassList) {
         }
         // .call will return undefined if it cannot
         // find the function called.
-        obj.call = function (funcName, parameters) {
+        obj.call = function (functionName, parameters) {
 
             //if our current class has this function
             //call that.
-            if (this.objParent.hasOwnProperty(funcName)) {
+            if (this.objParent.hasOwnProperty(functionName)) {
                 //look-up if we have a function defined
                 // in our parent Class
-                return this.objParent[funcName].apply(null, parameters);
+                return this.objParent[functionName].apply(null, parameters);
                 //prepare the function and exit to return;
             }
 
@@ -43,8 +43,8 @@ function createClass(className, superClassList) {
                 if (aClass == undefined) {
                     return undefined;
                 }
-                if (aClass.hasOwnProperty(funcName)) {
-                    objFunction = aClass[funcName];
+                if (aClass.hasOwnProperty(functionName)) {
+                    objFunction = aClass[functionName];
                 }
                 if (aClass.superClassList != undefined || aClass.superClassList != null) {
                     //iterate through non-empty class list
