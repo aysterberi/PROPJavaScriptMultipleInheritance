@@ -23,22 +23,23 @@ myObject.create = function (prototypeList) {
         if (obj.hasOwnProperty(functionName))
             return this[functionName].apply(null, parameters);
 
-        function dothetrickypart(theobj) {
+        function callSquirrel(nut) {
             var result;
             var count=0;
-            if (theobj.hasOwnProperty(functionName)) {
-                result = theobj[functionName];
+            if (nut.hasOwnProperty(functionName)) {
+                result = nut[functionName];
             }
-            if (theobj.ancestors != undefined || theobj.ancestors != null) {
+            if (nut.ancestors != undefined || nut.ancestors != null) {
                 //iterate through ancestors to see if we can spot
                 //our function
-                while ((result == undefined) && (count < theobj.ancestors.length)) {
-                    result = dothetrickypart(theobj.ancestors[count++]);
+                while ((result == undefined) && (count < nut.ancestors.length)) {
+                    result = callSquirrel(nut.ancestors[count++]);
                 }
             }
             return result;
         }
-        var objFunction = dothetrickypart(this);
+
+        var objFunction = callSquirrel(this);
         if (objFunction != undefined) {
             return objFunction.apply(null, parameters);
         }
