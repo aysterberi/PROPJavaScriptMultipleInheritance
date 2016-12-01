@@ -22,34 +22,56 @@ function createClass(className, superClassList) {
         // .call will return undefined if it cannot
         // find the function called.
         obj.call = function (funcName, parameters) {
-            var objFunction = null; // the function we will return;
-            //set it to zero
+
+            //if our current class has this function
+            //call that.
             if (this.objParent.hasOwnProperty(funcName)) {
                 //look-up if we have a function defined
                 // in our parent Class
-                objFunction = this.objParent[funcName].apply(null, parameters);
+                return this.objParent[funcName].apply(null, parameters);
                 //prepare the function and exit to return;
             }
-            // look-up if we have the function defined
-            // in one of our ancestors
-            else if (this.objClassList != null) {
-                //iterate through non-empty class list
-                for (var i = 0; i < this.objClassList.length; i++) {
-                    var ancestor = this.objClassList[i].new(); //instantiate the class to access its methods
-                    return ancestor.call(funcName, parameters); //try to call the function through recursion
+
+            //else, prepare to traverse through the class list
+
+            //we define helper class inside .call to access parent function vars
+            function traverseClass(aClass) {
+                // look-up if we have the function defined
+                // in one of our ancestors
+                var objFunction = undefined; // the function we will return;
+                var j = 0;
+                if (aClass == undefined) {
+                    return undefined;
                 }
+                if (aClass.hasOwnProperty(funcName)) {
+                    objFunction = aClass[funcName];
+                }
+                if (aClass.superClassList != undefined || aClass.superClassList != null) {
+                    //iterate through non-empty class list
+                    while ((objFunction == undefined) && (j <= aClass.superClassList.length)) {
+                        objFunction = traverseClass(aClass.superClassList[j++]);
+                    }
+                }
+
+                return objFunction;
             }
-            return objFunction;
+
+            var traverseResults = traverseClass(this.objParent);
+            if (traverseResults != undefined) {
+                return traverseResults.apply(null, parameters);
+            }
+            return undefined;
+
         };
         obj.getClass = function () {
             return obj.objParent;
         };
-
         Object.preventExtensions(obj); //prevent instantiation modification
         Object.seal(obj);
         //return our instantiated class object
         return obj;
     };
+
 
     //helper utility
     function inList(name, list) {
@@ -146,4 +168,4 @@ function assertEquals(expected, actual) {
     return false;
 }
 
-document.writeln(result);
+//document.writeln(result);
