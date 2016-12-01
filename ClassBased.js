@@ -1,3 +1,9 @@
+
+/*
+ * Billy G. J. Beltran(bibe1744) & Joakim Berglund(jobe7147)
+ * Contact details: billy@caudimordax.org, joakimberglund@live.se
+ */
+
 function createClass(className, superClassList) {
     //create the class object
     var aClass = Object.create(this);
