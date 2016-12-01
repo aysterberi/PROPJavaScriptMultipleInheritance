@@ -5,17 +5,17 @@ function createClass(className, superClassList) {
     aClass.superClassList = superClassList;
 
     aClass.new = function () {
-        //create everything;
+        // create everything;
         var obj = Object.create(this);
         obj.objParent = aClass;
         obj.objClassList = obj.objParent.superClassList;
-        //function declarations
+        // function declarations
         obj.getClassList = function () {
             return obj.objClassList;
         };
 
-        //check if cyclic inheritance
-        //return undefined if so
+        // check if cyclic inheritance
+        // return undefined if so
         if (inList(obj.objParent, obj.objParent.superClassList)) {
             return undefined;
         }
@@ -23,18 +23,18 @@ function createClass(className, superClassList) {
         // find the function called.
         obj.call = function (functionName, parameters) {
 
-            //if our current class has this function
-            //call that.
+            // if our current class has this function
+            // call that.
             if (this.objParent.hasOwnProperty(functionName)) {
                 //look-up if we have a function defined
                 // in our parent Class
                 return this.objParent[functionName].apply(null, parameters);
-                //prepare the function and exit to return;
+                // prepare the function and exit to return;
             }
 
-            //else, prepare to traverse through the class list
+            // else, prepare to traverse through the class list
 
-            //we define helper class inside .call to access parent function vars
+            // we define helper class inside .call to access parent function vars
             function traverseClass(aClass) {
                 // look-up if we have the function defined
                 // in one of our ancestors
@@ -47,12 +47,11 @@ function createClass(className, superClassList) {
                     objFunction = aClass[functionName];
                 }
                 if (aClass.superClassList != undefined || aClass.superClassList != null) {
-                    //iterate through non-empty class list
+                    // iterate through non-empty class list
                     while ((objFunction == undefined) && (j <= aClass.superClassList.length)) {
                         objFunction = traverseClass(aClass.superClassList[j++]);
                     }
                 }
-
                 return objFunction;
             }
 
@@ -61,19 +60,18 @@ function createClass(className, superClassList) {
                 return traverseResults.apply(null, parameters);
             }
             return undefined;
-
         };
         obj.getClass = function () {
             return obj.objParent;
         };
-        Object.preventExtensions(obj); //prevent instantiation modification
+        Object.preventExtensions(obj); // prevent instantiation modification
         Object.seal(obj);
-        //return our instantiated class object
+        // return our instantiated class object
         return obj;
     };
 
 
-    //helper utility
+    // helper utility
     function inList(name, list) {
         if (list != undefined) {
             for (var j = 0; j < list.length; j++) {
@@ -91,7 +89,6 @@ function createClass(className, superClassList) {
         }
         return false;
     }
-
     return aClass;
 }
 
@@ -117,7 +114,7 @@ console.log(result);
 
 console.log("Running tests…");
 CyclicInheritanceShouldBePrevented = function () {
-    //cyclic inheritance test
+    // cyclic inheritance test
     console.log("\tCyclicInheritanceShouldBePrevented");
     var testClass = createClass("Class3", [null]);
     testClass.superClassList = [testClass, class1, class2];
@@ -126,7 +123,7 @@ CyclicInheritanceShouldBePrevented = function () {
 };
 
 UndefinedFunctionShouldBeUndefined = function () {
-    //undefined test
+    // undefined test
     console.log("\tUndefinedFunctionShouldBeUndefined");
     var testClass = createClass("UndefinedClass", []);
     testObj = testClass.new();
@@ -139,8 +136,8 @@ DiamondProblemShouldBePrevented = function () {
     var Comfortable = createClass("Comfortable", null);
     var Aeroplane = createClass("Aeroplane", [Movable]);
     var LandVehicle = createClass("LandVehicle", [Movable]);
-    var AeroCar = createClass("AeroCar", [Comfortable, LandVehicle, Aeroplane]);  //"extends LandVehicle…"
-    //this function should only be called once
+    var AeroCar = createClass("AeroCar", [Comfortable, LandVehicle, Aeroplane]);  // "extends LandVehicle…"
+    // this function should only be called once
     Movable.accelerate = function (speed) {
         count++;
     };
@@ -158,7 +155,7 @@ runAllTests = function () {
 
 runAllTests();
 
-//helper utils
+// helper utils
 function assertEquals(expected, actual) {
     if (expected == actual) {
         console.log("\t\tOK.");
@@ -167,5 +164,3 @@ function assertEquals(expected, actual) {
     console.log("\t\tAssertionError:\tExpected '" + expected + "' but got '" + actual + "'.");
     return false;
 }
-
-//document.writeln(result);
